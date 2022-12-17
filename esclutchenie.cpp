@@ -1,19 +1,32 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
+
+
+#include <iostream>
+#include <vector>
 
 
 using namespace std;
-int drop()
+
+int main()
 {
     int a, b;
-    cout << "Chislitel" << endl;
+    cout << "Значение 1 вектора" << endl;
     cin >> a;
-    cout << "znamenatel" << endl;
+    cout << "Значение 2 вектора" << endl;
     cin >> b;
-    int c = a / b;
-    cout << c;
+
+    vector <int> v_1(a);
+    vector <int> v_2;
+    v_2.reserve(b);
+
+    int sum = a + b;
+
+    if (sum > 9 && sum < 100)
+        std::cout << "Сумма элементов является двухзначным значением";
+    else
+        std::cout << "Сумма элементов не является двухнзначным числом";
+
 }
 
-int main() {
-    drop();
-}
