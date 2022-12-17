@@ -1,103 +1,59 @@
-#6
 #include <iostream>
 #include <cmath>
-
 using namespace std;
 
-#define PI 3.14159265
-
-class Triad
-{
-private:
-    double a;
-    double b;
-    double c;
+class Number {
 public:
-    double GetA();
-    double GetB();
-    double GetC();
-    void SetA(double A);
-    void SetB(double B);
-    void SetC(double C);
-    double GetSum();
+    float first;
+    float second;
+    float sum();
+    float div();
 };
 
-class Trangle :public Triad
-{
+class Real : public Number {
 public:
-    double GetArea();
-    double GetAlpha();
-    double GetBeta();
-    double GetGamma();
+    int pow1;
+    Real(float First, float Second, float Pow) {
+        first = First;
+        second = Second;
+        pow1 = Pow;
+    }
+    float Pow();
+    float Log();
 };
 
-double Triad::GetA()
-{
-    return a;
+float Number::sum() {
+    cout << first << " + " << second << " = " << first + second << endl;
+    return(first + second);
 }
 
-double Triad::GetB()
-{
-    return b;
+float Number::div() {
+    cout << first << " / " << second << " = " << first / second << endl;
+    return(first / second);
 }
 
-double Triad::GetC()
-{
-    return c;
+float Real::Pow() {
+    cout << first << "^" << pow1 << " = " << pow(first, pow1) << endl;
+    cout << second << "^" << pow1 << " = " << pow(second, pow1) << endl;
+    return pow(first, pow1), pow(second, pow1);
 }
 
-void Triad::SetA(double A)
-{
-    a = A;
+float Real::Log() {
+    cout << "log(" << first << ") = " << log(first) << endl;
+    cout << "log(" << second << ") = " << log(second) << endl;
+    return log(first), log(second);
+
 }
 
-void Triad::SetB(double B)
-{
-    b = B;
-}
+int main() {
+    float a, b, p;
 
-void Triad::SetC(double C)
-{
-    c = C;
-}
+    cout << "Enter first, second, and power: ";
+    cin >> a >> b >> p;
 
-double Triad::GetSum()
-{
-    return a + b + c;
-}
-
-double Trangle::GetArea()
-{
-    double p = GetSum() / 2.0;
-    return sqrt(p * (p - GetA()) * (p - GetB()) * (p - GetC()));
-}
-
-double Trangle::GetAlpha()
-{
-    return 180.0 - GetBeta() - GetGamma();
-}
-
-double Trangle::GetBeta()
-{
-    return asin(2.0 * GetArea() / (GetC() * GetA())) * 180 / PI;
-}
-
-double Trangle::GetGamma()
-{
-    return acos((GetC() * GetC() - GetA() * GetA() - GetB() * GetB()) / (-2.0 * GetA() * GetB())) * 180 / PI;
-}
-
-
-int main()
-{
-    Trangle t;
-    t.SetA(3.0);
-    t.SetB(4.0);
-    t.SetC(5.0);
-    cout << t.GetArea() << endl;
-    cout << t.GetAlpha() << endl;
-    cout << t.GetBeta() << endl;
-    cout << t.GetGamma() << endl;
-    getchar();
-    return 0;
+    Real r = Real(a, b, p);
+    r.Pow();
+    r.Log();
+    r.sum();
+    r.div();
 }
