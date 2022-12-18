@@ -1,59 +1,47 @@
+#include "conio.h"
 #include <iostream>
-#include <cmath>
-using namespace std;
 
-class Number {
+class pair
+{
+protected:
+    int first;
+    int second;
+
 public:
-    float first;
-    float second;
-    float sum();
-    float div();
+    void set_first(int t) { first = t; };
+    void set_second(int t) { second = t; };
+    int get_first() { return first; };
+    int get_second() { return second; };
+    pair(int ta = 0, int tb = 0) :first(ta), second(tb) {};
+    friend bool operator > (pair, pair);
 };
+bool operator > (pair p1, pair p2) {
+    return (p1.first > p2.first) ? (true) : ((p1.first == p2.first) ? (p1.second > p2.second) : (false));
+}
 
-class Real : public Number {
+
+
+class fraction : public pair
+{
+private:
+
 public:
-    int pow1;
-    Real(float First, float Second, float Pow) {
-        first = First;
-        second = Second;
-        pow1 = Pow;
-    }
-    float Pow();
-    float Log();
+    void set_second(int t) { if (t != 0) second = t; };
+    friend bool operator > (fraction, fraction);
+
 };
-
-float Number::sum() {
-    cout << first << " + " << second << " = " << first + second << endl;
-    return(first + second);
+bool operator > (fraction f1, fraction f2) {
+    return (f1.second * f2.second > 0) ? (f1.first * f2.second > f2.first * f1.second) : (f1.first * f2.second < f2.first* f1.second);
 }
 
-float Number::div() {
-    cout << first << " / " << second << " = " << first / second << endl;
-    return(first / second);
-}
+int main()
+{
+    fraction f1(2, 3);
+    fraction f2(1, 2);
 
-float Real::Pow() {
-    cout << first << "^" << pow1 << " = " << pow(first, pow1) << endl;
-    cout << second << "^" << pow1 << " = " << pow(second, pow1) << endl;
-    return pow(first, pow1), pow(second, pow1);
-}
-
-float Real::Log() {
-    cout << "log(" << first << ") = " << log(first) << endl;
-    cout << "log(" << second << ") = " << log(second) << endl;
-    return log(first), log(second);
-
-}
-
-int main() {
-    float a, b, p;
-
-    cout << "Enter first, second, and power: ";
-    cin >> a >> b >> p;
-
-    Real r = Real(a, b, p);
-    r.Pow();
-    r.Log();
-    r.sum();
-    r.div();
+    std::cout << "(" << f1.get_first() << "/" << f1.get_second() << ") + (" << f1.get_first() << "/" << f1.get_second();
+    f1 = f1 + f2;
+    std::cout << ") = (" << f1.get_first() << "/" << f1.get_second() << ") " << std::endl;
+    getch();
+    return 0;
 }
