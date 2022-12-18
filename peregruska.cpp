@@ -1,288 +1,109 @@
 #include <iostream>
 #include <string>
-using namespace std;
+#include <sstream>
+#include <vector>
 
-class Account
+typedef unsigned int uint;
+const char maxSec = 60;
+const char maxMin = 60;
+const char maxHr = 24;
+
+class Time
 {
+private:
+	uint hour;
+	uint minute;
+	uint second;
 public:
-    string name;
-    int number;
-    int percent;
-    int summa;
-    Account() {}
-    Account(string Name, int Number, int Summa, int Percent) { name = Name; number = Number; summa = Summa; percent = Percent; };
-    void Read();
-    void Display();
-    void Change_Owner();
-    void Withdraw();
-    void Deposit();
-    void Percent();
-    void Exchange();
-    void In_Words();
-    Account operator + (const Account& other) {
-        Account temp;
-        temp.name = this->name + other.name;
-        temp.number = this->number + other.number;
-        temp.percent = this->percent + other.percent;
-        temp.summa = this->summa + other.summa;
-        return temp;
-    }
+	Time(uint h = 0, uint m = 0, uint s = 0) :
+		hour(h), minute(m), second(s) {} // проверка
+
+	Time(std::string time = "00:00:00")//проверка
+	{
+		std::vector<uint> vec;
+		std::istringstream iss(time);
+		std::string str;
+		int val;
+
+		while (std::getline(iss, str, ':'))
+		{
+			std::stringstream ss;
+			ss « str;
+			ss » val;
+			vec.push_back(val);
+		}
+		hour = vec[0];
+		minute = vec[1];
+		second = vec[2];
+	}
+
+	void setHour(uint h) { hour = h; } // проверка
+	void setMinute(uint m) { minute = m; } // проверка
+	void setSecond(uint s) { second = s; } // проверка
+
+	uint getHour()const { return hour; }
+	uint getMinute()const { return minute; }
+	uint getSecond()const { return second; }
+
+	static Time secToTime(uint sec)
+	{
+		uint h = (uint)(sec / maxMin / maxHr);
+		uint m = (uint)(sec / maxMin);
+		uint s = sec - m * (maxMin);
+
+		return Time(h, m, s);
+	}
+
+	static uint TimeToSec(Time& t)
+	{
+		return (t.getSecond() + t.getMinute() * maxMin + t.getHour() * maxHr * maxMin);
+	}
+
+	friend std::ostream& operator «(std::ostream& out, Time& t);
+	Time operator +(Time& t)// перегрузка операци
+	{
+		uint h = hour - t.getHour() < 0 ? 0 : hour - t.getHour();
+		uint m = minute - t.getMinute() < 0 ? 0 : minute - t.getMinute();
+		uint s = second - t.getSecond() < 0 ? 0 : second - t.getSecond();
+		return Time(h, m, s);
+	}
+
+	Time operator +(uint sec)// перегрузка операци
+	{
+		Time t(Time::secToTime(sec));
+		return *this + t;
+	}
+
+	bool operator ==(Time& t)
+	{
+		return hour == t.getHour() && minute == t.getMinute() && second == t.getSecond();
+	}
+
+	bool operator !=(Time& t)
+	{
+		return hour != t.getHour() && minute != t.getMinute() && second != t.getSecond();
+	}
 };
-
-void Account::Read()
-{
-    cout << "Enter the Last Name: " << endl;
-    cin >> name;
-    cout << "Enter the bank account number: " << endl;
-    cin >> number;
-    cout << "Enter the amount: " << endl;
-    cin >> summa;
-    cout << "Enter the percent: " << endl;
-    cin >> percent;
-}
-
-void Account::Display()
-{
-    cout << "Last Name: " << name << endl;
-    cout << "Bank account number: " << number << endl;
-    cout << "Balance: " << summa << endl;
-    cout << "Percent: " << percent << endl;
-}
-
-void Account::Change_Owner()
-{
-    cout << "Enter the last name of the new owner: " << endl;
-    cin >> name;
-}
-
-void Account::Withdraw()
-{
-    int s;
-    cout << "Enter the amount you would like to withdraw " << endl;
-    cin >> s;
-
-    if (s > summa)
-        cout << "Insufficient funds " << endl;
-    else
-    {
-        summa -= s;
-        cout << "Remaining amount: " << summa << endl;
-    }
-}
-
-void Account::Deposit()
-{
-    int s;
-    cout << "Enter the amount you would like to deposit: " << endl;
-    cin >> s;
-
-    summa += s;
-    cout << "Balance: " << summa << endl;
-}
-
-void Account::Percent()
-{
-    cout << "Interest accured " << endl;
-    cout << "The interest on your deposit is equal to: " << percent << endl;
-    summa = summa + ((summa * percent) / 100);
-    cout << "The amount after interest is equal to: " << endl;
-    cout << summa << endl;
-}
-
-
-
-void Account::Exchange()
-{
-    int number;
-    cout << "Which currence you would like to exchange to: " << endl;
-    cout << "1) USD " << endl;
-    cout << "2) EUR " << endl;
-    cin >> number;
-    if (number == 1)
-        cout << summa << "RUB = " << summa / 62 << "USD" << endl;
-    else if (number == 2)
-        cout << summa << "RUB = " << summa / 66 << "EUR" << endl;
-    else
-        cout << "Incorrect Input " << endl;
-
-}
-
-char* numeral(int n, size_t size, char* buf)
-{
-    char* one[] = { "","one ","two ","three ","four ","five ","six ","seven ","eight ","nine ",
-                  "ten ","eleven ","twelve ","thirteen ","fourteen ","fifteen ",
-                  "sixteen ","seventeen ","eighteen ","nineteen " };
-    char* ten[] = { "","", "twenty ", "thirty ", "fourty ", "fifty ", "sixty ", "seventy ",
-                  "eighty ", "ninety " };
-
-    buf = new char[size];
-    sprintf(buf, "%u", n);
-    int len = strlen(buf);
-    int temp, temp2;
-    switch (len)
-    {
-    case 1:
-        cout << one[n];
-        break;
-    case 2:
-        if (n < 20)
-        {
-            cout << one[n];
-        }
-        else if (n < 100)
-        {
-            if ((n % 10) == 0) cout << ten[n / 10];
-            else cout << ten[n / 10] << one[n % 10];
-        }
-        break;
-    case 3:
-        temp = n / 100;
-        n -= (n / 100) * 100;
-        if (n < 20)
-        {
-            cout << one[temp] << "hundred " << one[n];
-
-        }
-        else if (n < 100)
-        {
-            if ((n % 10) == 0) cout << one[temp] << "hundred " << ten[n / 10];
-            else cout << one[temp] << "hundred " << ten[n / 10] << one[n % 10];
-        }
-        break;
-    case 4:
-        temp = n / 1000;
-        n -= (n / 1000) * 1000;
-        cout << one[temp] << "thousand ";
-        temp = n / 100;
-        n -= (n / 100) * 100;
-        if (n < 20)
-        {
-            cout << one[temp] << "hundred ";
-            cout << one[n];
-        }
-        else if (n < 100)
-        {
-            if ((n % 10) == 0) {
-                cout << one[temp] << "hundred ";
-                cout << ten[n / 10];
-            }
-            else {
-                cout << one[temp] << "hundred ";
-                cout << ten[n / 10];
-                cout << one[n % 10];
-            }
-        }
-        break;
-    case 5:
-        temp = n / 1000;
-        n -= (n / 1000) * 1000;
-        if (temp < 20) {
-            cout << one[temp] << "thousand ";
-        }
-        else if (temp < 100)
-        {
-            if ((temp % 10) == 0) cout << ten[temp / 10] << "thousand ";
-            else cout << ten[temp / 10] << one[temp % 10] << "thousand ";
-        }
-        temp = n / 100;
-        n -= (n / 100) * 100;
-        if (n < 20)
-        {
-            cout << one[temp] << "hundred ";
-            cout << one[n];
-        }
-        else if (n < 100)
-        {
-            if ((n % 10) == 0) {
-                cout << one[temp] << "hundred ";
-                cout << ten[n / 10];
-            }
-            else {
-                cout << one[temp] << "hundred ";
-                cout << ten[n / 10];
-                cout << one[n % 10];
-            }
-        }
-        break;
-    case 6:
-        temp2 = n / 1000;
-        n -= (n / 1000) * 1000;
-
-        temp = temp2 / 100;
-        temp2 -= temp * 100;
-
-        if (temp2 < 20) {
-            cout << one[temp] << "hundred  and " << one[temp2] << "thousand ";
-        }
-        else if (temp2 < 100)
-        {
-            if ((temp % 10) == 0) cout << one[temp] << "hundred  and " << ten[temp2 / 10] << "thousand ";
-            else cout << one[temp] << "hundred and " << ten[temp2 / 10] << one[temp2 % 10] << "thousand ";
-        }
-        temp = n / 100;
-        n -= (n / 100) * 100;
-        if (n < 20)
-        {
-            cout << one[temp] << "hundred ";
-            cout << one[n];
-
-        }
-        else if (n < 100)
-        {
-            if ((n % 10) == 0) {
-                cout << one[temp] << "hundred ";
-                cout << ten[n / 10];
-            }
-            else {
-                cout << one[temp] << "hundred ";
-                cout << ten[n / 10];
-                cout << one[n % 10];
-            }
-        }
-        break;
-    }
-    return buf;
-}
-
-
-void Account::In_Words()
-{
-    char* str;
-    char buf[100];
-    int choice = summa;
-    str = numeral(choice, 256, buf);
-    cout << str << endl;
-}
-
-
-
 
 int main()
 {
-    Account acc;
+	setlocale(LC_ALL, "ru");
+	Time time(10, 15, 22);
+	Time time1("11:16:23");
+	Time time2(Time::secToTime(70));
+	Time time3((time1 + time));
+	Time time4((time + 120));
 
-    cout << "Personal Information: " << endl;
-    acc.Read();
-    cout << "Print data: " << endl;
-    acc.Display();
-    cout << "Change the account owner " << endl;
-    acc.Change_Owner();
-    cout << "Withdraw" << endl;
-    acc.Withdraw();
-    cout << "deposit" << endl;
-    acc.Deposit();
-    cout << "Exchange Currency" << endl;
-    acc.Exchange();
-    cout << "Print in words " << endl;
-    acc.In_Words();
+	std::cout « time3 « std::endl;
+	std::cout « time4 « std::endl;
 
-    Account acc2 = acc; //конструктор копирования
-    Account* acc3 = new Account("Vasya", 12, 13, 14); //конструктор инициализации
-    Account* acc4 = new Account(); //конструктор по умолчанию
-    Account acc5 = acc + acc2; //перегрузка
-    cout << endl << endl << "Overloaded Object" << endl;
-    acc5.Display();
-    Account account_arr[3]; //массив объектов
-    account_arr[0] = acc;
-    account_arr[1] = acc2;
+
+	system("PAUSE");
+	return 0;
+}
+
+std::ostream& operator «(std::ostream& out, Time& t)
+{
+	out « t.getHour() « ":" « t.getMinute() « ":" « t.getSecond();
+	return out;
 }
