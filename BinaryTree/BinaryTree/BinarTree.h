@@ -125,4 +125,14 @@ private:
 		showTree(currItem->getLeft(), indent + "  ");
 		showTree(currItem->getRight(), indent + "  ");
 	}
+	void substituteChilds(T itm){
+		if (findItem(itm) == nullptr)
+			return;
+		BinaryTreeItem<T>*leftChild = itm->getleft();
+		BinaryTreeItem<T>*rightChild = itm->getRight();
+		
+		itm->setLeft(rightChild);
+		itm->setRight(leftChild);
+	}
+	
 };
