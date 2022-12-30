@@ -79,7 +79,7 @@ void Traverse()
    right->Traverse();
  }
 };
-
+//метод возврата всех значений справа от родительской вершины.
 vector<T> getValuesToRight(BinaryTree* parent) {
         if (parent == nullptr) {
             return {};
