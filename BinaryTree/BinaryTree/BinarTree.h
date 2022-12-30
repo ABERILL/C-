@@ -80,22 +80,17 @@ void Traverse()
  }
 };
 
-//get the list of the elements at level l
-std::list<T> BinaryTree<T>::getValueAtLevel(int level)
-{
-  std::list<T> value;
-  if (level == 1)
-  {
-    value.push_back(data);
-    return value;
-  }
-  
-  else if (level > 1)
-  {
-   
-    //add the right side
-    std::list<T> rightValue = right->getValueAtLevel(level - 1);
-    value.merge(rightValue);
-  }
-  return value;
-}
+vector<T> getValuesToRight(BinaryTree* parent) {
+        if (parent == nullptr) {
+            return {};
+        }
+        
+        vector<T> result;
+        if (parent->right) {
+            result.push_back(parent->right->value);
+            vector<T> right = getValuesToRight(parent->right->right);
+            result.insert(result.end(), right.begin(), right.end());
+        }
+        return result;
+    }
+};
