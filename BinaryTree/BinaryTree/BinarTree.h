@@ -1,29 +1,86 @@
 /* Template Class Binary Tree */
 template <class T>
+template<typename T>
 class BinaryTree
 {
-private: 
-  T data;
-  BinaryTree *left;
-  BinaryTree *right;
+ T data;
+ BinaryTree* left;
+ BinaryTree* right;
 
-public: 
-  //constructor 
-  BinaryTree();
+public:
+ BinaryTree(T value)
+ {
+  data = value;
+  left = nullptr;
+  right =  nullptr;
+ }
+ 
+ void Add(T value)
+ {
+  if (value < data)
+  {
+   if (left != nullptr)
+    left->Add(value);
+   else
+    left = new BinaryTree(value);
+  }
+  else
+  {
+   if (right != nullptr)
+    right->Add(value);
+   else
+    right = new BinaryTree(value);
+  }
+ }
 
-  //destructor 
-  ~BinaryTree();
+void Delete(T value)
+ {
+  if (value < data && left != nullptr)
+   left->Delete(value);
+  else if (value > data && right != nullptr)
+   right->Delete(value);
+  else
+  {
+   BinaryTree* tmpNode;
 
-  //insert a new value
-  void insert (T val); 
+   if (left == nullptr && right == nullptr)
+    tmpNode = nullptr;
+   else if (left == nullptr)
+    tmpNode = right;
+   else if (right == nullptr)
+    tmpNode = left;
+   else
+   {
+    tmpNode = right;
 
-  //return a list of all values located at a given level
-  std::list<T> getValuesAtLevel(int level);
+    while (tmpNode->left != nullptr)
+     tmpNode = tmpNode->left;
 
+    tmpNode->left = left;
+   }
+
+   data = tmpNode->data;
+
+   right = tmpNode->right;
+   left = tmpNode->left;
+
+   delete tmpNode;
+  }
+ }
+
+void Traverse()
+ {
+  if (left != nullptr)
+   left->Traverse();
+
+  cout << data << " ";
+
+  if (right != nullptr)
+   right->Traverse();
+ }
 };
 
 //get the list of the elements at level l
-template <class T>
 std::list<T> BinaryTree<T>::getValuesAtLevel(int level)
 {
   std::list<T> values;
