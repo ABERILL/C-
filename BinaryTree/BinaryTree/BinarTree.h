@@ -81,21 +81,21 @@ void Traverse()
 };
 
 //get the list of the elements at level l
-std::list<T> BinaryTree<T>::getValuesAtLevel(int level)
+std::list<T> BinaryTree<T>::getValueAtLevel(int level)
 {
-  std::list<T> values;
+  std::list<T> value;
   if (level == 1)
   {
-    values.push_back(data);
-    return values;
+    value.push_back(data);
+    return value;
   }
   
   else if (level > 1)
   {
    
     //add the right side
-    std::list<T> rightValues = right->getValuesAtLevel(level - 1);
-    values.merge(rightValues);
+    std::list<T> rightValue = right->getValueAtLevel(level - 1);
+    value.merge(rightValue);
   }
-  return values;
+  return value;
 }
